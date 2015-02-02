@@ -59,58 +59,6 @@ public class Simulator implements Runnable {
 	return next;
     }
 
-    layer Tremaux {
-	private boolean back = false;
-	private boolean foundLoop = false;
-
-	//	activate { foundLoop = false; }
-	
-	public Node getNextNode() {
-	    if (foundLoop) {
-		foundLoop = false;
-		back = true;
-		path[pathLength] = 3;
-		pathLength++;
-		angle = (angle+180)%360;
-		return tmpForFoundLoop;
-	    }
-	    
-	    Node next = mazeData.getNextNode(angle, currentNode);
-	    if (next == null) return null;
-	    
-	    if (!next.isTraced()) {
-		next.setTraced();
-		if (back) back = false;
-		return next;
-	    } else if (back) {
-		return next;
-	    } else {
-		foundLoop = true;
-		tmpForFoundLoop = currentNode;
-		return next;
-	    }
-	}
-
-	public int selectTurn() {
-	    int dir = proceed();
-	    if (dir == 3) {
-		back = true;
-	    }
-	    return dir;
-	}
-
-	public void simplify() {
-	    proceed();
-	    if (path[pathLength - 1] != 3) back = false;
-	}
-
-	public void turnAndSimplify() {
-	    if (!foundLoop) {
-		proceed();
-	    }
-	}
-    }
-    
     private void followSegment() {
 	currentNode = currentNode.updateCurrentNode(getNextNode());
 	if (currentNode == null) {
@@ -119,20 +67,6 @@ public class Simulator implements Runnable {
 	}
     }
 
-    layer RightHandRule {
-	public int selectTurn() {
-	    if (mazeData.getNextNode((angle+90)%360, currentNode)!=null) {
-		return 0;
-	    } else if (mazeData.getNextNode((angle)%360, currentNode)!=null) {
-		return 1;
-	    } else if (mazeData.getNextNode((angle+270)%360, currentNode)!=null) {
-		return 2;
-	    } else {
-		return 3;
-	    }
-	}
-    }
-    
     public int selectTurn() {
 	if (mazeData.getNextNode((angle+270)%360, currentNode)!=null) {
 	    return 2;
@@ -204,75 +138,12 @@ public class Simulator implements Runnable {
 
     public void printPath() { }
 
-    layer Debugging {
-	public void printPath() {
-	    Node n = mazeData.getStartNode();
-	    int angle = mazeData.getAngle();
-	    mazeData.resetDebugColor();
-	    for (int i=0; i<pathLength; i++) {
-		n = n.updateCurrentNode(mazeData.getNextNode(angle, n));
-		n.setTraced();
-		angle = turn(path[i],angle);
-		debugText.append(decodePath(path[i]));
-	    }
-	    n = n.updateCurrentNode(mazeData.getNextNode(angle, n));
-	    debugText.append("\n");
-	    view.setDebugArea(debugText.toString());
-	}
-
-	private String decodePath(int path) {
-	    if (path == 0) return "R";
-	    else if (path == 1) return "S";
-	    else if (path == 2) return "L";
-	    else if (path == 3) return "B";
-	    else return "";
-	}
-    }
-
     public void turnAndSimplify() {
 	int direction = selectTurn();
 	path[pathLength] = direction;
 	pathLength++;
 	angle = turn(direction,angle);
 	simplify();
-    }
-    
-    layer SolvingMaze {
-	public void run() {
-	    while (!(currentNode instanceof GoalNode)) {
-		if (reset) return;
-		if (sleepIfInstructed()) continue;
-		followSegment();
-		printPath();
-		view.repaint();
-		try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException e) { }
-		turnAndSimplify();
-	    }
-	    mazeSolved();
-	    simulatorThread = null;
-	    tmp = null;
-	    view.endDebug();
-	    view.solved();
-	    view.setRerunnable();
-	}
-    }
-
-    layer RunningMaze {
-	public void run() {
-	    for (int i=0; i<pathLength; i++) {
-		if (sleepIfInstructed()) continue;
-		followSegment();
-		angle = turn(path[i],angle);
-		view.repaint();
-		try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException e) { }
-	    }
-	    simulatorThread = null;
-	    tmp = null;
-	}
     }
     
     public void start() {

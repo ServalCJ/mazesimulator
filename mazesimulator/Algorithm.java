@@ -3,6 +3,6 @@ package mazesimulator;
 contextgroup Algorithm(Simulator sim) {
     subscriberTypes: Simulator, SimulatorView;
     
-    activate RightHandRule when if(sim.isRightHandRule());
-    activate Tremaux when if(sim.isTremaux());
+    activate RightHandRule if(sim.isRightHandRule());
+    activate Tremaux if(sim.isTremaux());
 }

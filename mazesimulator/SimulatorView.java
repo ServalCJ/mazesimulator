@@ -19,7 +19,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class SimulatorView extends JFrame implements ActionListener {
@@ -221,41 +220,6 @@ public class SimulatorView extends JFrame implements ActionListener {
 	toolPane.revalidate();
     }
     
-    layer EditingMaze {
-	public void setMenuBar() {
-	    proceed();
-	    JMenu file = new JMenu("File");
-	    file.add(new_menu);
-	    file.add(open);
-	    file.add(save);
-	    file.add(close);
-	    menuBar.add(file);
-	    menuBar.revalidate();
-	}
-    }
-
-    layer RunningMaze {
-	public void setMenuBar() {
-	    proceed();
-	    JMenu maze = new JMenu("Maze");
-	    maze.add(start_menu);
-	    maze.add(stop_menu);
-	    maze.add(rerun_menu);
-	    maze.add(reset_menu);
-	    menuBar.add(maze);
-	    menuBar.revalidate();
-	}
-
-	public void setButtons() {
-	    proceed();
-	    buttons.add(start);
-	    buttons.add(stop);
-	    buttons.add(rerun);
-	    buttons.add(reset);
-	    buttons.revalidate();
-	}
-    }
-
     public void setEnabledAlgorithm() {
 	if (simulator == null) {
 	    lefthand.setEnabled(false);
@@ -267,93 +231,6 @@ public class SimulatorView extends JFrame implements ActionListener {
     }
 
 
-    layer Tremaux {
-	public void setEnabledAlgorithm() {
-	    proceed();
-	    tremaux.setEnabled(false);
-	    lefthand.setEnabled(true);
-	    righthand.setEnabled(true);
-	}
-    }
-
-    layer RightHandRule {
-	public void setEnabledAlgorithm() {
-	    proceed();
-	    tremaux.setEnabled(true);
-	    lefthand.setEnabled(false);
-	    righthand.setEnabled(true);
-	}
-    }
-
-
-    layer SolvingMaze {
-	public void setMenuBar() {
-	    proceed();
-	    JMenu maze = new JMenu("Maze");
-	    maze.add(start_menu);
-	    maze.add(stop_menu);
-	    maze.add(reset_menu);
-	    maze.add(debug_menu);
-	    menuBar.add(maze);
-	    JMenu algorithm = new JMenu("Algorighm");
-	    algorithm.add(lefthand);
-	    algorithm.add(righthand);
-	    algorithm.add(tremaux);
-	    setEnabledAlgorithm();
-	    menuBar.add(algorithm);
-	    menuBar.revalidate();
-	}
-
-	public void setButtons() {
-	    proceed();
-	    buttons.add(start);
-	    buttons.add(stop);
-	    buttons.add(reset);
-	    buttons.add(debug);
-	    buttons.revalidate();
-	}
-
-    }
-
-    layer Debugging {
-	deactivate {
-	    if (simulator != null) simulator.resetDebug();
-	}
-	
-	public void setToolPane() {
-	    proceed();
-	    JScrollPane scrollPane = new JScrollPane(debugArea);
-	    toolPane.add(scrollPane, BorderLayout.CENTER);
-	    toolPane.revalidate();
-	}
-
-	public void setButtons() {
-	    buttons.removeAll();
-	    buttons.add(start);
-	    buttons.add(stop);
-	    buttons.add(reset);
-	    buttons.add(stop_debug);
-	    buttons.revalidate();
-	}
-
-	public void setMenuBar() {
-	    menuBar.removeAll();
-	    JMenu maze = new JMenu("Maze");
-	    maze.add(start_menu);
-	    maze.add(stop_menu);
-	    maze.add(reset_menu);
-	    maze.add(stop_debug_menu);
-	    menuBar.add(maze);
-	    JMenu algorithm = new JMenu("Algorighm");
-	    algorithm.add(lefthand);
-	    algorithm.add(righthand);
-	    algorithm.add(tremaux);
-	    setEnabledAlgorithm();
-	    menuBar.add(algorithm);
-	    menuBar.revalidate();
-	}
-    }
-	
     private void initialize() {
 	setTitle("Maze Simulator");
 	setSize(700,550);

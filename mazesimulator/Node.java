@@ -42,13 +42,6 @@ public class Node {
 	color = Color.RED;
     }
 
-    layer UnderDebugging {
-	public void setTraced() {
-	    proceed();
-	    color = Color.GREEN;
-	}
-    }
-	
     public void resetDebugColor() {
 	if (traced) color = Color.RED;
 	else color = Color.BLACK;

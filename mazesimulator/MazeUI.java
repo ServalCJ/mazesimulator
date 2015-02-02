@@ -1,14 +1,14 @@
 package mazesimulator;
 
 global contextgroup MazeUI() {
-    activate EditingMaze when
-	active SimulatorView.startEditor until SimulatorView.startSolver;
-    activate SolvingMaze when
-	active SimulatorView.startSolver until SimulatorView.solved;
-    activate RunningMaze when
-    	active SimulatorView.solved until SimulatorView.never;
-    activate Debugging when
-	active SimulatorView.startDebug until SimulatorView.endDebug;
-    context Printing cflow(call(void Simulator.printPath()));
-    activate UnderDebugging when Debugging && Printing;
+    activate EditingMaze 
+	from SimulatorView.startEditor to SimulatorView.startSolver;
+    activate SolvingMaze 
+	from SimulatorView.startSolver to SimulatorView.solved;
+    activate RunningMaze 
+    	from SimulatorView.solved to SimulatorView.never;
+    activate Debugging 
+	from SimulatorView.startDebug to SimulatorView.endDebug;
+    context Printing is in cflow(call(void Simulator.printPath()));
+    activate UnderDebugging when Debugging && when Printing;
 }

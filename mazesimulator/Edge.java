@@ -22,15 +22,6 @@ public class Edge {
 	color = Color.RED;
     }
 
-    layer UnderDebugging {
-	public void setTraced() {
-	    proceed();
-	    color = Color.GREEN;
-	    src.setTraced();
-	    dst.setTraced();
-	}
-    }
-
     public boolean equals(Object o) {
 	if (o instanceof Edge) {
 	    Edge e = (Edge)o;
